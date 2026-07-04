@@ -1,2 +1,1132 @@
-test me on git working directory.
-tested...
+1. Test Register API
+
+POST http://localhost:8080/api/v1/auth/register
+
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "email": "admin@school.com",
+  "password": "admin123",
+  "phoneNumber": "9999999999",
+  "role": "ADMIN"
+}
+
+2. Test Login API
+
+POST http://localhost:8080/api/v1/auth/login
+
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "admin",
+  "password": "admin123"
+}
+
+Expected response will include:
+
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "accessToken": "...",
+    "tokenType": "Bearer",
+    "userId": 1,
+    "username": "admin",
+    "roles": ["ADMIN"]
+  },
+  "errors": null
+}
+
+###############################################################################3
+
+3. Test Create Student API
+Use token from login API.
+
+POST http://localhost:8080/api/v1/students
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "admissionNumber": "ADM001",
+  "firstName": "Rahul",
+  "lastName": "Sharma",
+  "dateOfBirth": "2015-05-10",
+  "gender": "MALE",
+  "address": "Hyderabad",
+  "classId": 1,
+  "sectionId": 1,
+  "rollNumber": "10",
+  "admissionDate": "2026-06-27",
+  "userId": null
+}
+
+
+4. Test Get Students API
+
+GET http://localhost:8080/api/v1/students
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+#################################################################################################################
+
+5. Test Create Parent API
+
+POST http://localhost:8080/api/v1/parents
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+{
+  "firstName": "Suresh",
+  "lastName": "Sharma",
+  "phoneNumber": "9888888888",
+  "whatsappNumber": "9888888888",
+  "email": "suresh.parent@example.com",
+  "address": "Hyderabad",
+  "userId": null,
+  "notificationPreference": "BOTH"
+}
+
+
+6. Test Link Student and Parent
+Assuming student id is 1 and parent id is 1:
+
+POST http://localhost:8080/api/v1/parents/link-student
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+{
+  "studentId": 1,
+  "parentId": 1,
+  "relationType": "FATHER"
+}
+
+
+7. Test Get Parent Links by Student
+
+GET http://localhost:8080/api/v1/parents/student/1
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+###############################################################################
+
+8. Test Create Teacher API
+
+POST http://localhost:8080/api/v1/teachers
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+{
+  "employeeCode": "TCH001",
+  "firstName": "Anita",
+  "lastName": "Rao",
+  "email": "anita.rao@school.com",
+  "phoneNumber": "9777777777",
+  "qualification": "M.Sc Mathematics",
+  "joiningDate": "2026-06-27",
+  "userId": null
+}
+
+
+9. Test Get Teachers API
+
+GET http://localhost:8080/api/v1/teachers
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+#################################################################################################
+
+10. Test APIs
+Create academic year:
+
+POST http://localhost:8080/api/v1/academic/years
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+{
+  "name": "2026-2027",
+  "startDate": "2026-06-01",
+  "endDate": "2027-04-30",
+  "active": true
+}
+
+
+Create class:
+
+POST http://localhost:8080/api/v1/academic/classes
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "name": "Class 1",
+  "academicYearId": 1
+}
+
+
+
+Create section:
+
+POST http://localhost:8080/api/v1/academic/sections
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+{
+  "name": "A",
+  "classId": 1
+}
+
+
+Create subject:
+
+POST http://localhost:8080/api/v1/academic/subjects
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "name": "Mathematics",
+  "code": "MATH"
+}
+
+
+Assign subject to class:
+
+POST http://localhost:8080/api/v1/academic/class-subjects
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "classId": 1,
+  "subjectId": 1
+}
+
+
+Assign subject to teacher:
+
+POST http://localhost:8080/api/v1/academic/teacher-subjects
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+{
+  "teacherId": 1,
+  "subjectId": 1,
+  "classId": 1,
+  "sectionId": 1
+}
+
+###################################################################################################
+
+11. Test Mark Attendance API
+
+POST http://localhost:8080/api/v1/attendance
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+{
+  "classId": 1,
+  "sectionId": 1,
+  "attendanceDate": "2026-06-27",
+  "markedByTeacherId": 1,
+  "records": [
+    {
+      "studentId": 1,
+      "status": "PRESENT",
+      "remarks": "On time"
+    }
+  ]
+}
+
+
+12. Test Get Attendance API
+
+GET http://localhost:8080/api/v1/attendance?classId=1&sectionId=1&attendanceDate=2026-06-27
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+13. Test Attendance Summary API
+
+GET http://localhost:8080/api/v1/attendance/summary?studentId=1&startDate=2026-06-01&endDate=2026-06-30
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+##################################################################################################
+
+
+Test APIs
+Create exam:
+
+POST http://localhost:8080/api/v1/exams
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+{
+  "name": "Term 1 Exam",
+  "academicYearId": 1,
+  "classId": 1,
+  "startDate": "2026-08-01",
+  "endDate": "2026-08-10"
+}
+
+
+Add exam subject:
+
+POST http://localhost:8080/api/v1/exams/1/subjects
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "subjectId": 1,
+  "maxMarks": 100,
+  "passingMarks": 35
+}
+
+
+Enter marks:
+
+POST http://localhost:8080/api/v1/exams/1/marks
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "subjectId": 1,
+  "records": [
+    {
+      "studentId": 1,
+      "marksObtained": 88,
+      "remarks": "Good performance"
+    }
+  ]
+}
+
+
+Publish exam:
+
+POST http://localhost:8080/api/v1/exams/1/publish
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Get student result:
+
+GET http://localhost:8080/api/v1/students/1/results
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+After this works, the next module in our order is Fee Module.
+
+
+##################################################################################
+
+
+Test APIs
+Create fee category:
+
+POST http://localhost:8080/api/v1/fees/categories
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "name": "Tuition Fee",
+  "description": "Monthly tuition fee"
+}
+
+
+Create fee structure:
+
+POST http://localhost:8080/api/v1/fees/structures
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "academicYearId": 1,
+  "classId": 1,
+  "categoryId": 1,
+  "amount": 5000,
+  "dueDate": "2026-07-10"
+}
+
+
+Create invoice:
+
+POST http://localhost:8080/api/v1/fees/invoices
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "studentId": 1,
+  "academicYearId": 1,
+  "classId": 1,
+  "dueDate": "2026-07-10",
+  "items": [
+    {
+      "feeCategoryId": 1,
+      "amount": 5000
+    }
+  ]
+}
+
+
+Record offline payment:
+
+POST http://localhost:8080/api/v1/fees/payments/offline
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "invoiceId": 1,
+  "amount": 2000,
+  "paymentMode": "CASH",
+  "referenceNumber": "CASH-001",
+  "remarks": "Partial payment"
+}
+
+
+Get invoices:
+
+GET http://localhost:8080/api/v1/fees/invoices
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Get collection report:
+
+GET http://localhost:8080/api/v1/fees/reports/collection
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+
+##########################################################################################
+
+Test APIs
+Create payment order:
+
+14. Create Payment Order
+
+POST http://localhost:8080/api/v1/payments/orders
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+For Razorpay with all cards:
+
+
+{
+  "invoiceId": 1,
+  "gatewayName": "RAZORPAY",
+  "preferredPaymentMethod": "CARD"
+}
+
+
+For debit card:
+
+
+{
+  "invoiceId": 1,
+  "gatewayName": "RAZORPAY",
+  "preferredPaymentMethod": "DEBIT_CARD"
+}
+
+
+For credit card:
+
+
+{
+  "invoiceId": 1,
+  "gatewayName": "RAZORPAY",
+  "preferredPaymentMethod": "CREDIT_CARD"
+}
+
+
+For PayU:
+
+
+{
+  "invoiceId": 1,
+  "gatewayName": "PAYU",
+  "preferredPaymentMethod": "CARD"
+}
+
+
+For PhonePe / UPI:
+
+
+{
+  "invoiceId": 1,
+  "gatewayName": "PHONEPE",
+  "preferredPaymentMethod": "UPI"
+}
+
+
+Expected response:
+
+
+{
+  "success": true,
+  "message": "Payment order created successfully",
+  "data": {
+    "id": 1,
+    "orderNumber": "PAY-ORD-178...",
+    "invoiceId": 1,
+    "studentId": 1,
+    "amount": 3000,
+    "currency": "INR",
+    "gatewayName": "RAZORPAY",
+    "gatewayOrderId": "razorpay_order_178...",
+    "status": "CREATED",
+    "checkoutUrl": null,
+    "preferredPaymentMethod": "CARD"
+  },
+  "errors": null
+}
+
+
+15. Get Payment Order
+
+
+GET http://localhost:8080/api/v1/payments/orders/1
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+15. Confirm Payment Manually
+Use the same amount returned from create order.
+
+
+POST http://localhost:8080/api/v1/payments/confirm
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "paymentOrderId": 1,
+  "gatewayPaymentId": "pay_test_001",
+  "gatewaySignature": "dummy-signature",
+  "amount": 3000,
+  "paymentMode": "CARD",
+  "rawResponse": "{\"status\":\"captured\",\"method\":\"card\"}"
+}
+
+
+For debit card:
+{
+  "paymentOrderId": 1,
+  "gatewayPaymentId": "pay_test_debit_001",
+  "gatewaySignature": "dummy-signature",
+  "amount": 3000,
+  "paymentMode": "DEBIT_CARD",
+  "rawResponse": "{\"status\":\"captured\",\"method\":\"debit_card\",\"network\":\"VISA\"}"
+}
+
+
+For credit card:
+
+
+{
+  "paymentOrderId": 1,
+  "gatewayPaymentId": "pay_test_credit_001",
+  "gatewaySignature": "dummy-signature",
+  "amount": 3000,
+  "paymentMode": "CREDIT_CARD",
+  "rawResponse": "{\"status\":\"captured\",\"method\":\"credit_card\",\"network\":\"MASTERCARD\"}"
+
+
+
+Important: gatewayPaymentId must be unique every time.
+16. Get All Transactions
+
+GET http://localhost:8080/api/v1/payments/transactions
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+17. Get Receipt
+After payment confirmation, receipt will be created.
+
+
+GET http://localhost:8080/api/v1/payments/receipts/1
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+18. Record Webhook
+This API is public in our current code.
+
+
+POST http://localhost:8080/api/v1/payments/webhooks/razorpay
+
+
+Content-Type: application/json
+
+
+{
+  "eventId": "evt_test_001",
+  "eventType": "payment.captured",
+  "payload": "{\"gatewayPaymentId\":\"pay_test_001\",\"status\":\"captured\"}"
+}
+
+
+PayU webhook:
+
+
+POST http://localhost:8080/api/v1/payments/webhooks/payu
+
+
+Content-Type: application/json
+
+
+{
+  "eventId": "payu_evt_001",
+  "eventType": "payment.success",
+  "payload": "{\"mihpayid\":\"payu_payment_001\",\"status\":\"success\"}"
+}
+
+
+PhonePe webhook:
+
+
+POST http://localhost:8080/api/v1/payments/webhooks/phonepe
+
+
+Content-Type: application/json
+
+
+{
+  "eventId": "phonepe_evt_001",
+  "eventType": "PAYMENT_SUCCESS",
+  "payload": "{\"transactionId\":\"phonepe_txn_001\",\"state\":\"COMPLETED\"}"
+}
+
+
+19. Initiate Refund
+
+
+POST http://localhost:8080/api/v1/payments/refunds
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "paymentTransactionId": 1,
+  "refundAmount": 1000,
+  "reason": "Parent requested partial refund"
+}
+
+
+20. Get Reconciliation
+
+
+GET http://localhost:8080/api/v1/payments/reconciliation
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+
+#########################################################################################################
+
+Test APIs
+Create SMS template:
+
+POST http://localhost:8080/api/v1/notifications/templates
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "templateName": "FEE_DUE_SMS",
+  "channel": "SMS",
+  "subject": "Fee Due Reminder",
+  "body": "Dear {{parentName}}, fee amount {{amount}} is due for {{studentName}}.",
+  "providerTemplateId": "sms_fee_due_001",
+  "active": true
+}
+
+
+Create WhatsApp template:
+
+POST http://localhost:8080/api/v1/notifications/templates
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "templateName": "PAYMENT_SUCCESS_WHATSAPP",
+  "channel": "WHATSAPP",
+  "subject": "Payment Confirmation",
+  "body": "Payment of {{amount}} received successfully for {{studentName}}. Receipt No: {{receiptNumber}}.",
+  "providerTemplateId": "wa_payment_success_001",
+  "active": true
+}
+
+
+Send SMS notification:
+
+POST http://localhost:8080/api/v1/notifications/send
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "templateId": 1,
+  "triggeredByModule": "FEE",
+  "variables": {
+    "parentName": "Suresh Sharma",
+    "studentName": "Rahul Sharma",
+    "amount": "3000"
+  },
+  "recipients": [
+    {
+      "recipientUserId": null,
+      "phoneNumber": "9888888888",
+      "whatsappNumber": null
+    }
+  ]
+}
+
+
+Send WhatsApp notification:
+
+POST http://localhost:8080/api/v1/notifications/send
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "templateId": 2,
+  "triggeredByModule": "PAYMENT",
+  "variables": {
+    "studentName": "Rahul Sharma",
+    "amount": "3000",
+    "receiptNumber": "RCPT-001"
+  },
+  "recipients": [
+    {
+      "recipientUserId": null,
+      "phoneNumber": null,
+      "whatsappNumber": "9888888888"
+    }
+  ]
+}
+
+
+Get notification requests:
+
+
+GET http://localhost:8080/api/v1/notifications/requests
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+
+Record webhook:
+
+POST http://localhost:8080/api/v1/notifications/webhooks/whatsapp
+Content-Type: application/json
+
+
+{
+  "eventId": "wa_evt_001",
+  "eventType": "message.delivered",
+  "payload": "{\"providerMessageId\":\"whatsapp_msg_001\",\"status\":\"delivered\"}"
+}
+
+
+
+##########################################################################################################
+
+
+Test APIs
+Create notice for selected users:
+
+POST http://localhost:8080/api/v1/notices
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "title": "School Holiday",
+  "content": "School will remain closed on Monday due to public holiday.",
+  "targetType": "INDIVIDUAL",
+  "publishedByUserId": 1,
+  "recipientUserIds": [1]
+}
+
+
+Create class notice:
+
+POST http://localhost:8080/api/v1/notices
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "title": "Class Test Reminder",
+  "content": "Mathematics class test will be conducted tomorrow.",
+  "targetType": "CLASS",
+  "classId": 1,
+  "sectionId": 1,
+  "publishedByUserId": 1,
+  "recipientUserIds": [1]
+}
+
+
+Publish notice:
+
+POST http://localhost:8080/api/v1/notices/1/publish
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Get all notices:
+
+GET http://localhost:8080/api/v1/notices
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Get published notices:
+
+GET http://localhost:8080/api/v1/notices?status=PUBLISHED
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Get notices for a user:
+
+GET http://localhost:8080/api/v1/notices?userId=1
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Mark notice as read:
+POST http://localhost:8080/api/v1/notices/1/read?userId=1
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+
+#####################################################################################################
+
+
+Test APIs
+Create live class:
+
+POST http://localhost:8080/api/v1/live-classes
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "title": "Mathematics Live Class",
+  "description": "Algebra basics",
+  "academicYearId": 1,
+  "classId": 1,
+  "sectionId": 1,
+  "subjectId": 1,
+  "teacherId": 1,
+  "scheduledStartTime": "2026-07-01T10:00:00",
+  "scheduledEndTime": "2026-07-01T11:00:00",
+  "providerName": "ZOOM",
+  "recordingEnabled": true,
+  "studentIds": [1]
+}
+
+
+Start live class:
+
+POST http://localhost:8080/api/v1/live-classes/1/start
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Student join:
+
+POST http://localhost:8080/api/v1/live-classes/1/join
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+
+{
+  "studentId": 1
+}
+Student leave:
+POST http://localhost:8080/api/v1/live-classes/1/leave
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+{
+  "studentId": 1
+}
+
+
+Complete live class:
+
+POST http://localhost:8080/api/v1/live-classes/1/complete
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Get student live classes:
+
+GET http://localhost:8080/api/v1/live-classes/student/1
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Reschedule live class:
+
+POST http://localhost:8080/api/v1/live-classes/1/reschedule
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "scheduledStartTime": "2026-07-01T12:00:00",
+  "scheduledEndTime": "2026-07-01T13:00:00"
+}
+
+
+Webhook:
+
+POST http://localhost:8080/api/v1/live-classes/webhooks/zoom
+
+
+Content-Type: application/json
+
+
+{
+  "liveClassId": 1,
+  "eventType": "meeting.ended",
+  "payload": "{\"meetingId\":\"zoom_meeting_001\",\"status\":\"ended\"}"
+}
+
+
+#############################################################################################
+
+Test APIs
+Create recorded class:
+
+POST http://localhost:8080/api/v1/recorded-classes
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+{
+  "title": "Algebra Basics Recording",
+  "description": "Recorded class for algebra basics",
+  "liveClassId": 1,
+  "academicYearId": 1,
+  "classId": 1,
+  "sectionId": 1,
+  "subjectId": 1,
+  "teacherId": 1,
+  "storageProvider": "LOCAL",
+  "recordingUrl": "https://recordings.example.com/algebra-basics.mp4",
+  "storageKey": "algebra-basics.mp4",
+  "thumbnailUrl": "https://recordings.example.com/algebra-basics.jpg",
+  "durationInMinutes": 60,
+  "fileSize": 104857600,
+  "availableFrom": "2026-07-01T12:00:00",
+  "availableUntil": "2026-12-31T23:59:59"
+}
+
+
+Get recorded classes:
+
+GET http://localhost:8080/api/v1/recorded-classes
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Get student recorded classes:
+
+GET http://localhost:8080/api/v1/recorded-classes/student/1?classId=1&sectionId=1
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Get playback URL:
+
+GET http://localhost:8080/api/v1/recorded-classes/1/playback-url?studentId=1
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Update progress:
+
+POST http://localhost:8080/api/v1/recorded-classes/1/progress
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "studentId": 1,
+  "watchedDurationInMinutes": 25,
+  "completed": false
+}
+
+
+Mark completed:
+
+POST http://localhost:8080/api/v1/recorded-classes/1/progress
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+Content-Type: application/json
+
+
+{
+  "studentId": 1,
+  "watchedDurationInMinutes": 60,
+  "completed": true
+}
+
+
+Get student progress:
+
+GET http://localhost:8080/api/v1/recorded-classes/student/1/progress
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Delete recorded class:
+
+DELETE http://localhost:8080/api/v1/recorded-classes/1
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+###################################################################################################################
+
+
+Test APIs
+Student report:
+
+GET http://localhost:8080/api/v1/reports/students
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Attendance report:
+
+GET http://localhost:8080/api/v1/reports/attendance
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Exam report:
+
+GET http://localhost:8080/api/v1/reports/exams
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Fee report:
+
+GET http://localhost:8080/api/v1/reports/fees
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Payment report:
+
+GET http://localhost:8080/api/v1/reports/payments
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Live class report:
+
+GET http://localhost:8080/api/v1/reports/live-classes
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Recorded class report:
+
+GET http://localhost:8080/api/v1/reports/recorded-classes
+
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+#########################################################################################################
+
+
+Test Audit Logs
+After triggering payment, notice publish, live class start, or playback URL:
+
+GET http://localhost:8080/api/v1/audit-logs
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+Filter examples:
+
+GET http://localhost:8080/api/v1/audit-logs?moduleName=PAYMENT
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+
+
+GET http://localhost:8080/api/v1/audit-logs?action=RECORDING_ACCESSED
+
+Authorization: Bearer YOUR_ACCESS_TOKEN
+

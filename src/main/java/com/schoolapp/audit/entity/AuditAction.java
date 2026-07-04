@@ -1,0 +1,18 @@
+package com.schoolapp.audit.entity;
+
+public enum AuditAction {
+    CREATE,
+    UPDATE,
+    DELETE,
+    LOGIN,
+    LOGIN_FAILED,
+    LOGOUT,
+    PUBLISH,
+    PAYMENT_SUCCESS,
+    PAYMENT_FAILED,
+    REFUND_REQUESTED,
+    NOTIFICATION_SENT,
+    LIVE_CLASS_STARTED,
+    LIVE_CLASS_COMPLETED,
+    RECORDING_ACCESSED
+}
